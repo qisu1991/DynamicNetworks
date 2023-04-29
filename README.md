@@ -9,6 +9,8 @@ FILE
 <pre>
 DynamicNetworks.jl      obtain the critical benefit-to-cost ratio (b/c)^* for dynamic networks that are comprised of any number of networks and involve any transition between them
                         provide detailed instruction of each function and illustrate the application with a simple example from Figure 2a in the main text
+edge_list1              the edge list of a two-clique network with N=40 and a=0.5 (see more details in Figure 2a)
+edge_list2              the edge list of a two-clique network with N=40 and a=0.7 
 </pre>
                         
 INSTALLATION
