@@ -21,7 +21,7 @@ INSTALLATION
 *) Download the open-source software VS Code 1.77.3 or a newer version from https://code.visualstudio.com/download.
 *) Install VS Code on your local PC. The expected installation time is approximately ten minutes.
 *) Install the Julia VS Code extension from https://code.visualstudio.com/docs/languages/julia. The expected installation time is approximately five minutes.
-*) Run VS Code, add DynamicNetworks.jl, and Install a solver package: 
+*) Run VS Code, add DynamicNetworks.jl, and install a solver package: 
    1) Type the following command in TEMINAL, and then press ENTER:
       julia
    2) Type the following command, and then press ENTER:  
