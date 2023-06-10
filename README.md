@@ -21,8 +21,15 @@ INSTALLATION
 *) Download the open-source software VS Code 1.77.3 or a newer version from https://code.visualstudio.com/download.
 *) Install VS Code on your local PC. The expected installation time is approximately ten minutes.
 *) Install the Julia VS Code extension from https://code.visualstudio.com/docs/languages/julia. The expected installation time is approximately five minutes.
-*) Run VS Code, add DynamicNetworks.jl, and click "Run and Debug" to execute the program.
-*) The expected output is the critical benefit-to-cost ratio of an example from Figure 2a in the main text. The expected run time is approximately three minutes.
+*) Run VS Code, add DynamicNetworks.jl, and Install a solver package: 
+   1) Type the following command in TEMINAL, and then press ENTER:
+      julia
+   2) Type the following command, and then press ENTER:  
+      using Pkg; Pkg.add("IterativeSolvers");
+*) Click "Run and Debug" to execute the program.
+*) The expected outputs are
+   1) Two critical benefit-to-cost ratios of examples from Figure 2a in the main text (by analytical computations), one with \alpha=0.5, the other with \alpha=0.8, corresponding to the two vertical lines in Figure 2b. The expected run time is approximately three minutes;
+   2) A set of critical benefit-to-cost ratios presented in the inset of Figure 3a in the main text (by analytical computations). The expected run time is approximately five minutes.
 </pre>
 
 QUESTIONS
