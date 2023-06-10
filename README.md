@@ -35,4 +35,4 @@ INSTALLATION
 QUESTIONS
 ---------
 For any question about this program, please contact
-Dr. Qi Su, Email: qisu1991@sas.upenn.edu
+Dr. Qi Su, Email: qisu@sjtu.edu.cn, qisu1991@sas.upenn.edu
