@@ -19,7 +19,8 @@ function pi_DB(edge_seq::Array{Float64,2}, transition::Array{Float64,2})
     end
     # transition matrix between L networks
     Q = sparse(transition[:,1], transition[:,2], transition[:,3], L, L)
-
+    # write reproductive value to be a vector X with LN elements 
+    # construct the linear system MatA*X=MatB, and solve the set of equations
     MatA = spzeros(Float64, L*N, L*N)
     for i = 1:L
         for j = 1:L
@@ -81,6 +82,7 @@ function eta_DB(edge_seq::Array{Float64,2}, transition::Array{Float64,2})
         P[(i-1)*N+1:i*N,:] = M_i./deg
     end
     Q = zeros(Float64, L, L) + sparse(transition[:,1], transition[:,2], transition[:,3], L, L)
+    # obtain the stationary distribution of a network transition matrix Q
     vec_solution = ones(Float64,L)/L
     if sum(Diagonal(Q)) != L
         MatA = transpose(Q)-Diagonal(ones(Float64,L))
@@ -92,7 +94,8 @@ function eta_DB(edge_seq::Array{Float64,2}, transition::Array{Float64,2})
         vec_solution[1:L-1] = vec_solution_reduced
         vec_solution[L] = 1-sum(vec_solution_reduced)
     end
-    # \tau_{ij}
+    # write the set of eta_{ij}^{beta} to be a vector X with LN^2 elements 
+    # construct the linear system MatA*X=MatB, and solve the set of equations to obtain eta_{ij}^{beta}
     MatA = spzeros(Float64, L*N^2, L*N^2)
     for i = 1:L
         for j = 1:L
@@ -122,11 +125,7 @@ function eta_DB(edge_seq::Array{Float64,2}, transition::Array{Float64,2})
     end
     for i = 1:L
         for j = 1:L
-            MatA[(i-1)*N^2+1:i*N^2,(j-1)*N^2+1:j*N^2] = MatA[(i-1)*N^2+1:i*N^2,(j-1)*N^2+1:j*N^2] + Diagonal(ones(Float64,N^2))*Q[j,i]
-            Pgamma = sum(P[(j-1)*N+1:j*N,:]*Q[j,i]/N,dims=1)
-            Pgamma2 = ones(Float64, N)*Pgamma + transpose(ones(Float64, N)*Pgamma)
-            Pgamma3 = reshape(Pgamma2,:,1)
-            MatA[(i-1)*N^2+1:i*N^2,(j-1)*N^2+1:j*N^2] = MatA[(i-1)*N^2+1:i*N^2,(j-1)*N^2+1:j*N^2] - Diagonal(Pgamma3[:,1])
+            MatA[(i-1)*N^2+1:i*N^2,(j-1)*N^2+1:j*N^2] = MatA[(i-1)*N^2+1:i*N^2,(j-1)*N^2+1:j*N^2] + Diagonal(ones(Float64,N^2))*Q[j,i]*(1-2/N)
         end
     end
     MatA = MatA - Diagonal(ones(Float64,L*N^2))
@@ -135,7 +134,7 @@ function eta_DB(edge_seq::Array{Float64,2}, transition::Array{Float64,2})
     vec3 = setdiff(1:L*N^2, vec2)
     MatA_reduced = MatA[vec3,vec3]
     MatB = reshape(ones(Float64, N^2)*transpose(vec_solution),:,1)
-    MatB = 2*MatB/N
+    MatB = -MatB/N
     MatB_reduced = MatB[vec3]
     eta_solution_reduced = idrs(MatA_reduced,MatB_reduced)
     eta_solution = spzeros(Float64, L*N^2)
@@ -184,7 +183,7 @@ function bc_DB(edge_seq::Array{Float64,2}, transition::Array{Float64,2})
         P_temp2 = (sum(transpose(Q[i,:]).*pi_solution,dims=2).*P_temp1).*(P_temp1*(sum(M[(i-1)*N+1:i*N,:],dims=2).*transpose(eta_solution[(i-1)*N+1:i*N,:])))/N
         v2 = v2 + sum(P_temp2)
     end
-    return (v0-v2)/(u0-u2)
+    return (v2-v0)/(u2-u0)
 end
 
 # generate a two-subgraph network like Figure 2a
@@ -271,7 +270,7 @@ println("For the two-subgraph network with N = 40 and a = 0.5, the critical bene
 alpha = 0.7
 edge_seq = edge_list(N, alpha)
 bc = bc_DB(1.0*edge_seq, transition)
-println("For the two-clique network with N = 40 and a = 0.7, the critical benefit-to-cost ratio (b/c)* is ", bc)
+println("For the two-subgraph network with N = 40 and a = 0.7, the critical benefit-to-cost ratio (b/c)* is ", bc)
 
 
 # Figure 3a
@@ -292,7 +291,6 @@ for i = 1:length(N_list)
     bc_list[i] = bc_DB(1.0*edge_seq, transition)
 end
 println("For the two-subgraph dynamic networks, the critical benefit-to-cost ratios (b/c)* are ", bc_list)
-
 
 # static networks
 bc_list = zeros(Float64,length(N_list))
